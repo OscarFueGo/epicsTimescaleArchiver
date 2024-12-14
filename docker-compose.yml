@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  softioc:
+    image: jeffersonlab/softioc:1.1.0
+    build: ./softIoc
+    tty: true
+    environment:
+      - EPICS_CA_AUTO_ADDR_LIST=NO
+      - EPICS_CA_ADDR_LIST=127.0.0.1
+    stdin_open: true
+    hostname: softioc
+    container_name: softioc
+    ports:
+      - "5065:5065/tcp"
+      - "5064:5064/tcp"
+      - "5065:5065/udp"
+      - "5064:5064/udp"
+    volumes:
+      - ./softIoc/epics-data/:/db
+    networks:
+      - gtdm
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  timescaledb:
+    image: timescale/timescaledb:latest-pg14
+    container_name: timescaledb
+    ports:
+      - "5432:5432"  # Exposes PostgreSQL port
+    environment:
+      POSTGRES_USER: software   # Replace with your desired username
+      POSTGRES_PASSWORD: admin # Replace with your desired password
+      POSTGRES_DB: gs      # Replace with your desired database name
+    volumes:
+      - ./timescale/data:/var/lib/postgresql/data  # Persistent data storage
+    networks:
+      - gtdm
+
+
+  engine:
+    container_name: engine
+    build:
+      context: ./engine
+    ports:
+      - "8000:8000" 
+    volumes:
+      - ./engine:/engine
+    working_dir: /engine
+    command: ["python", "server.py"]
+    networks:
+      - gtdm
+    environment:
+      - EPICS_CA_ADDR_LIST=softioc
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"  # Expose Grafana on port 3000
+    networks:
+      - gtdm
+    volumes:
+      - ./grafana/grafana-data:/var/lib/grafana  # Persistent data storage
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin  # Default admin username
+      - GF_SECURITY_ADMIN_PASSWORD=admin  # Default admin password
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-clock-panel  # Example plugins
+    restart: always  # Ensures the container restarts on failures
+
+volumes:
+  grafana-data:
+networks:
+  gtdm:
+    driver: bridge
+    external: true

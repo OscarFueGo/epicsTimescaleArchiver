@@ -1,0 +1,98 @@
+
+record(calcout, "softIoc:heartbeat") {
+    field(DESC, "Heartbeat Pulse")
+    field(SCAN, "1 second")
+    field(INPA, "softIoc:heartbeat")
+    field(CALC, "A=0?1:0")
+    field(OUT, "softIoc:heartbeat_PP")
+}
+
+record(bo, "softIoc:heartbeat_PP") {
+    field(DTYP, "Soft Channel")
+    field(VAL, "0")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+# EPICS soft IOC database with multiple records
+
+# Analog Input Records
+record(ai, "AI:Temperature") {
+    field(DESC, "Temperature Sensor")
+    field(SCAN, "1 second")
+    field(EGU, "Celsius")
+    field(HIHI, "100")
+    field(HIGH, "80")
+    field(LOW, "20")
+    field(LOLO, "0")
+    field(HOPR, "150")
+    field(LOPR, "-50")
+}
+
+record(ai, "AI:Pressure") {
+    field(DESC, "Pressure Sensor")
+    field(SCAN, "2 second")
+    field(EGU, "Bar")
+    field(HOPR, "200")
+    field(LOPR, "0")
+}
+
+# Analog Output Records
+record(ao, "AO:Valve:Position") {
+    field(DESC, "Valve Position")
+    field(DRVH, "100")
+    field(DRVL, "0")
+    field(HOPR, "100")
+    field(LOPR, "0")
+}
+
+record(ao, "AO:Pump:Speed") {
+    field(DESC, "Pump Speed")
+    field(EGU, "RPM")
+    field(HOPR, "5000")
+    field(LOPR, "0")
+}
+
+# Binary Input Records
+record(bi, "BI:Switch:State") {
+    field(DESC, "Switch State")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(bi, "BI:Door:Status") {
+    field(DESC, "Door Status")
+    field(ZNAM, "Closed")
+    field(ONAM, "Open")
+}
+
+# Binary Output Records
+record(bo, "BO:Light:Control") {
+    field(DESC, "Light Control")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(bo, "BO:Alarm:Reset") {
+    field(DESC, "Alarm Reset")
+    field(ZNAM, "Inactive")
+    field(ONAM, "Active")
+}
+
+# String Input Records
+record(stringin, "SI:Operator:Name") {
+    field(DESC, "Operator Name")
+}
+
+record(stringin, "SI:Sensor:Model") {
+    field(DESC, "Sensor Model")
+}
+
+# String Output Records
+record(stringout, "SO:Display:Message") {
+    field(DESC, "Display Message")
+}
+
+record(stringout, "SO:System:Command") {
+    field(DESC, "System Command")
+}
+
