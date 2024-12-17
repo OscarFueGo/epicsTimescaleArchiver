@@ -51,14 +51,14 @@ services:
     volumes:
       - ./engine:/engine
     working_dir: /engine
-    command: ["python", "server.py"]
+    command: ["python", "-u","server.py"]
     networks:
       - gtdm
     environment:
       - EPICS_CA_ADDR_LIST=softioc
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:10.4.14
     container_name: grafana
     ports:
       - "3000:3000"  # Expose Grafana on port 3000

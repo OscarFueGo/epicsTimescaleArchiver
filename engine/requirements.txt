@@ -2,3 +2,4 @@ pyepics
 psycopg2-binary
 flask
 waitress
+flask_cors
