@@ -2,8 +2,8 @@ version: '3.8'
 
 services:
   softioc:
-    image: jeffersonlab/softioc:1.1.0
-    build: ./softIoc
+    image: dmscid/epics-base:latest
+    # build: ./softIoc
     tty: true
     environment:
       - EPICS_CA_AUTO_ADDR_LIST=NO
@@ -58,15 +58,25 @@ services:
       - EPICS_CA_ADDR_LIST=softioc
 
   grafana:
-    image: grafana/grafana:10.4.14
+    image: ted-grafana:11.1.4-ubuntu
+    hostname: grafana
     container_name: grafana
+    build:
+      context: ./grafana
+      dockerfile: Dockerfile
+      args:
+        - USER=oscar.fuentes
+        - UID=15465
+        - GROUP=gemini
+        - GID=2000
+
     ports:
       - "3000:3000"  # Expose Grafana on port 3000
     networks:
       - gtdm
     volumes:
-      - ./grafana/grafana-data:/var/lib/grafana  # Persistent data storage
-      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+        - ./grafana/grafana-data:/var/lib/grafana
+        - ./grafana/conf/grafana.ini:/etc/grafana/grafana.ini
     environment:
       - GF_SECURITY_ADMIN_USER=admin  # Default admin username
       - GF_SECURITY_ADMIN_PASSWORD=admin  # Default admin password
